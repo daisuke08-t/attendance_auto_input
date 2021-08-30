@@ -11,6 +11,14 @@ class Main:
           dotenv_path = join(dirname(__file__), '.env')
           load_dotenv(dotenv_path)
 
+          going_to_work_time = "9:00"
+          leaving_work_time = "18:30"
+          rest_in_time = ["12:00", "17:30"]
+          rest_return_time = ["12:45", "18:00"]
+          work_time_no = 8
+          plus_come_in_cou = 2
+          exclusion_day = []
+
           driver = webdriver.Chrome(executable_path=os.environ.get("CHROME_DRIVER_PATH"))
           # driver.get("https://www.google.com/")
 
@@ -55,21 +63,21 @@ class Main:
                if(i == 0):
                     continue
 
+               if(i in exclusion_day):
+                    continue
+
                path_week_day = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[2]/div".format(i)
 
                for j in driver.find_elements_by_xpath(path_week_day):
                     if(j.text == Constants.WEEKDAY):
-                         plus_come_in_cou = 2
-                         going_to_work_time = "9:00"
-                         leaving_work_time = "18:30"
-                         before_rest_in_time = "12:00"
-                         before_rest_return_time = "12:45"
-                         after_rest_in_time = "17:30"
-                         after_rest_return_time = "18:00"
+                         #before_rest_in_time = "12:00"
+                         #before_rest_return_time = "12:45"
+                         #after_rest_in_time = "17:30"
+                         #after_rest_return_time = "18:00"
                          #勤務時間帯を選択
                          path_select = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[3]/select".format(i)
                          select = Select(driver.find_element_by_xpath(path_select))
-                         select.select_by_value(Constants.WORKING_HOURS[8])
+                         select.select_by_value(Constants.WORKING_HOURS[work_time_no])
                          #出勤時間を入力
                          psth_2 = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[4]/div/input".format(i)
                          input_going_to_work = driver.find_element_by_xpath(psth_2)
@@ -80,30 +88,32 @@ class Main:
                          input_leaving_work.send_keys(leaving_work_time)
                          #指定数分の休憩枠追加
                          if(plus_come_in_cou != None):
-                              for plus in range(plus_come_in_cou):
-                                   plus = plus + 1
-                                   #休憩入りの枠追加
-                                   path_plus_come_in = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[6]/div/a[1]".format(i)
-                                   click_plus_come_in = driver.find_element_by_xpath(path_plus_come_in)
-                                   click_plus_come_in.click()
-                                   #休憩戻りの枠追加
-                                   path_plus_return = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[7]/div/a[1]".format(i)
-                                   click_plus_return = driver.find_element_by_xpath(path_plus_return)
-                                   click_plus_return.click()
+                              for k in range(plus_come_in_cou):
+                                   plus = k + 1
+
+                                   if(k != 0):
+                                        #休憩入りの枠追加
+                                        path_plus_come_in = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[6]/div/a[1]".format(i)
+                                        click_plus_come_in = driver.find_element_by_xpath(path_plus_come_in)
+                                        click_plus_come_in.click()
+                                        #休憩戻りの枠追加
+                                        path_plus_return = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[7]/div/a[1]".format(i)
+                                        click_plus_return = driver.find_element_by_xpath(path_plus_return)
+                                        click_plus_return.click()
                          
                                    #休憩入り時間入力
                                    path_before_rest_in = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[6]/div[{}]/input".format(i, plus)
                                    input_before_rest_in = driver.find_element_by_xpath(path_before_rest_in)
-                                   input_before_rest_in.send_keys(before_rest_in_time)
+                                   input_before_rest_in.send_keys(rest_in_time[plus - 1])
                                    #休憩戻り時間入力
                                    path_before_rest_return = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/table/tbody/tr[{}]/td[7]/div[{}]/input".format(i, plus)
                                    input_before_rest_return = driver.find_element_by_xpath(path_before_rest_return)
-                                   input_before_rest_return.send_keys(before_rest_return_time)
+                                   input_before_rest_return.send_keys(rest_return_time[plus - 1])
 
           #保存ボタン押下
           # path_save = "/html/body/div[1]/div[2]/div/div/div/div[2]/div/form/div[2]/div/div/div[2]/input[2]"
           # for i in driver.find_elements_by_xpath(path_save):
           #      i.submit()
 
-          time.sleep(1)
+          time.sleep(60)
           driver.quit()

@@ -1,5 +1,3 @@
-from main import Main
-
-main = Main()
+import main
 
 main.main()

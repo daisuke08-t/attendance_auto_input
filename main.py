@@ -23,7 +23,12 @@ def main():
      rest_in_time = worksheet.range('F15:F22').value
      rest_return_time = worksheet.range('G15:G22').value
      work_time = worksheet.range('C16').value
-     work_time_no = int(work_time[0])
+
+     if(work_time[0:2].isdigit()):
+          work_time_no = int(work_time[0:2])
+     else:
+          work_time_no = int(work_time[0])
+     
      plus_come_in_cou = int(worksheet.range('C17').value)
      exclusion_day = []
 

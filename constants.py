@@ -1,4 +1,6 @@
 class Constants:
+    CHROME_DRIVER_PATH='C:\\attendance_auto_input\\chromedriver_win32\\chromedriver.exe'
+    ATTENDANCE_PYTHON_RUN='C:\\attendance_auto_input\\attendance_python_run.xlsm'
     WEEKDAY = "平日"
 
     """
